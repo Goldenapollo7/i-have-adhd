@@ -546,6 +546,65 @@ class TestSonnyPCOps(unittest.TestCase):
         self.assertIn("Terminated `blender.exe`", ok)
         self.assertEqual(self.gaming_srv.killed_host_pids, [14320])
 
+    def test_kill_switch_cannot_be_neutered_from_chat(self) -> None:
+        """The owner's <1s escape hatch must be inviolable, even with Confirm pressed."""
+        neutering = [
+            "del C:\\SonnyAgent\\GAMING_MODE.lock",
+            "del /f C:\\SonnyAgent\\GAME_MODE_ON.cmd",
+            "ren C:\\SonnyAgent\\GAME_MODE_ON.cmd off.bak",
+            "copy nul C:\\SonnyAgent\\GAME_MODE_ON.cmd",
+            "copy nul GAME_MODE_ON.cmd",
+            "icacls C:\\SonnyAgent\\GAME_MODE_ON.cmd /deny %USERNAME%:F",
+            "takeown /f C:\\SonnyAgent\\GAME_MODE_ON.cmd",
+            "move C:\\SonnyAgent\\GAME_MODE_OFF.cmd D:\\stash\\",
+            "attrib +h +s C:\\SonnyAgent\\GAME_MODE_ON.cmd",
+            "schtasks /Change /TN SonnyTerminal_GamingPC /DISABLE",
+            "schtasks /Delete /TN SonnyTerminal_GamingPC /F",
+            "schtasks /End /TN SonnyTerminal_GamingPC",
+            "reg add HKLM\\System\\CurrentControlSet\\Services\\Tailscale /v Start /t REG_DWORD /d 4 /f",
+            "sc config Tailscale start= disabled",
+            "sc delete ollama",
+            '"C:\\SonnyAgent\\GAME_MODE_ON.cmd"',
+            "C:\\SonnyAgent\\GAME_MODE_ON.cmd --nopause",
+        ]
+        for cmd in neutering:
+            res = asyncio.run(self.tools.run_pc_command("gaming", cmd, __event_call__=self._approve))
+            self.assertTrue(res.startswith("BLOCKED:"), f"kill-switch tamper not blocked: {cmd!r} -> {res!r}")
+
+        # Reading/inspecting the switch, and querying the task, stay allowed (no false positives).
+        for allowed in (
+            "dir C:\\SonnyAgent",
+            "type C:\\SonnyAgent\\media_stop_list.txt",
+            "schtasks /Query /TN SonnyTerminal_GamingPC",
+            "sc query tailscale",
+        ):
+            res = asyncio.run(self.tools.run_pc_command("gaming", allowed, __event_call__=self._approve))
+            self.assertFalse(res.startswith("BLOCKED:"), f"over-blocked legitimate command: {allowed!r}")
+
+    def test_full_control_is_preserved(self) -> None:
+        """Sonny must retain genuine full control of both PCs (the owner's explicit requirement)."""
+        full_control = [
+            ("ai", "taskkill /F /PID 1234"),
+            ("ai", "sc query spooler"),
+            ("ai", "net start spooler"),
+            ("ai", "shutdown /r /t 60"),
+            ("ai", "robocopy C:\\src D:\\dst /E"),
+            ("ai", "reg query HKLM\\Software"),
+            ("ai", "npm run build"),
+            ("ai", "docker compose up -d"),
+            ("ai", "ollama run sonny7-uncensored-8b:latest"),
+            ("gaming", "git push"),
+            ("gaming", "python train.py"),
+            ("gaming", "ffmpeg -i in.mp4 out.mp4"),
+            ("gaming", "docker run --rm hello-world"),
+            ("gaming", "nvidia-smi"),
+        ]
+        for target, cmd in full_control:
+            self.assertIsNone(
+                self.mod._validate_command(target, cmd),
+                f"{target} should permit {cmd!r}",
+            )
+
     def test_api_keys_are_scrubbed_from_error_outputs(self) -> None:
         self.tools.valves.ai_pc_api_key = "WRONG_KEY_FOR_AUTH_TEST"
         status = asyncio.run(self.tools.check_homelab_status())

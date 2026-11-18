@@ -77,6 +77,60 @@ HARD_BLOCKED_PATTERNS: tuple[tuple[re.Pattern[str], str], ...] = (
         re.compile(r"game_mode_off\.cmd", re.IGNORECASE),
         "Turning Gaming Mode OFF remotely is forbidden; run ALLOW SONNY directly on the Gaming PC.",
     ),
+    # The kill-switch must stay inviolable. Sonny may TRIGGER GAME_MODE_ON.cmd (that is the
+    # safe direction and is done internally by stop_gaming_pc_work), but must never modify,
+    # rename, delete, re-ACL, or otherwise neuter the switch or its scheduled task. Without
+    # this, chat could permanently disable the owner's <1s escape hatch.
+    (
+        re.compile(
+            r"(del|erase|rmdir|rd|ren|rename|move|copy|replace|attrib|icacls|takeown|cacls|truncate)"
+            r"[^&|\r\n]*sonnyagent",
+            re.IGNORECASE,
+        ),
+        "Modifying anything in C:\\SonnyAgent (Gaming Mode switch, config, helper) is forbidden.",
+    ),
+    (
+        re.compile(
+            r"(del|erase|rmdir|rd|ren|rename|move|copy|replace|attrib|icacls|takeown|cacls|truncate)"
+            r"[^&|\r\n]*game_mode_(on|off|status)\.cmd",
+            re.IGNORECASE,
+        ),
+        "Modifying, renaming, or deleting the Gaming Mode scripts is forbidden.",
+    ),
+    (
+        re.compile(
+            r"(^|[&|\s])(del|erase|copy|move|ren|rename|attrib)\b[^&|\r\n]*\bcon\b",
+            re.IGNORECASE,
+        ),
+        "Overwriting files with the null device (`copy nul <file>`) is forbidden.",
+    ),
+    (
+        re.compile(
+            r"schtasks[^&|\r\n]*(/(change|delete|end)\b[^&|\r\n]*sonnyterminal_gamingpc"
+            r"|/create\b[^&|\r\n]*sonnyterminal_gamingpc)",
+            re.IGNORECASE,
+        ),
+        "Modifying the SonnyTerminal_GamingPC scheduled task is forbidden; GAME_MODE_ON/OFF manage it locally.",
+    ),
+    (
+        re.compile(
+            r"reg(\.exe)?\s+(add|delete)\b[^&|\r\n]*(\\services\\)?(tailscale|ollama|docker)",
+            re.IGNORECASE,
+        ),
+        "Modifying Tailscale/Ollama/Docker service registry keys is forbidden.",
+    ),
+    (
+        re.compile(
+            r"sc(\.exe)?\s+(config|delete)\b[^&|\r\n]*(tailscale|ollama|docker)",
+            re.IGNORECASE,
+        ),
+        "Reconfiguring or deleting the Tailscale/Ollama/Docker services is forbidden.",
+    ),
+    (
+        # Quoted absolute path to the switch as the FIRST token executes it directly.
+        re.compile(r"^\s*\"?[a-z]:\\[^\"]*game_mode_on\.cmd", re.IGNORECASE),
+        "Launching the Gaming Mode switch directly from chat is forbidden; use the locked stop action instead.",
+    ),
     (
         re.compile(r"\btailscale(\.exe)?\s+funnel\b", re.IGNORECASE),
         "Public exposure via `tailscale funnel` is forbidden; Sonny stays strictly private.",

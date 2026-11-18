@@ -116,6 +116,32 @@ You have four ways to stop Sonny on the Gaming PC at any second:
 
 ---
 
+## What Sonny Can Do (Full Control)
+
+When a machine is reachable, Sonny has genuine full control of it — not a narrow whitelist. Anything not on the permanent-limits list below can be done, with a Confirm/Deny prompt for anything consequential.
+
+| Capability | AI PC | Gaming PC (Gaming Mode OFF) | Example you can say |
+| --- | --- | --- | --- |
+| Shell commands (any `cmd.exe` command) | ✅ | ✅ | *"Run `robocopy C:\src D:\dst /E` on the Gaming PC"* |
+| Start / stop specific processes by PID | ✅ | ✅ | *"Kill PID 14320 on the Gaming PC"* |
+| Services, `powercfg`, scheduled tasks | ✅ | ✅ | *"Restart the spooler service on the AI PC"* |
+| Shutdown / restart | ✅ | ✅ | *"Reboot the Gaming PC in 60 seconds"* |
+| Files anywhere on `C:\` (create/edit/copy/move/delete) | ✅ | ✅ | *"Delete `C:\SonnyWork\code\old` and re-clone the repo"* |
+| Git, builds, tests, package managers | ✅ | ✅ | *"Run `npm run build` in `C:\SonnyWork\code`"* |
+| Docker containers | ✅ | ✅ | *"Start my comfyui container on the Gaming PC"* |
+| GPU / VRAM / hardware queries | ✅ | ✅ | *"How much VRAM is free on the Gaming PC?"* |
+| Network diagnostics | ✅ | ✅ | *"Run `ipconfig /all` on the AI PC"* |
+| Ollama model listing & inference | ✅ | ❌ (AI lives on AI PC) | *"Which models are loaded on the AI PC?"* |
+| Same commands while **Gaming Mode is ON** | ✅ | ❌ port `8002` closed | *"Why can't you reach the Gaming PC?"* |
+
+**Permanent limits (never overridable, even if you press Confirm):**
+- Modifying, renaming, deleting, or null-overwriting anything in `C:\SonnyAgent`; changing the `SonnyTerminal_GamingPC` task; disabling Tailscale/Ollama/Docker services. *(Protects your kill-switch.)*
+- Turning Gaming Mode **OFF** remotely — only you, locally, via **`ALLOW SONNY`**.
+- Blanket-killing `python.exe`, shells, `explorer.exe`, Windows core, anti-cheat, Steam, Discord, OBS, iCUE, Tailscale, Ollama, Docker.
+- Changing PowerShell `ExecutionPolicy`; publishing anything publicly (`tailscale funnel`); `format` / `diskpart` / `bcdedit` / `cipher /w` / `vssadmin delete`; pulling or deleting Ollama models.
+
+---
+
 ## Step 5 — Enable Private iPhone & Touchscreen Access (~2 min)
 
 1. On the **AI PC**, publish Open WebUI strictly inside your Tailscale tailnet (`tailscale serve` only — never public):
