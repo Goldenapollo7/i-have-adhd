@@ -1,0 +1,24 @@
+# Gaming PC optional media-generation stop list (C:\SonnyAgent\media_stop_list.txt)
+#
+# NOTE: GAME_MODE_ON.cmd ALWAYS kills open-terminal.exe and every coding/media child
+# process Sonny started, even if this file has zero active lines.
+#
+# Add lines below ONLY for standalone media-generation containers or renderers you
+# started outside Sonny that you ALSO want stopped automatically when you game.
+#
+# Format (one entry per line, lines starting with # are ignored):
+#   container:<docker-container-name>
+#   process:<dedicated-media-exe-name.exe>
+#
+# Safety: Windows OS services, Steam, Discord, OBS, Corsair iCUE, Tailscale, browsers,
+# and broad interpreters (python.exe, node.exe, cmd.exe, powershell.exe) are always
+# blocked here so Gaming Mode can never disrupt your desktop or games.
+#
+# Examples (uncomment any you use on the Gaming PC):
+# container:comfyui
+# container:automatic1111
+# container:invokeai
+# container:swarmui
+# process:ffmpeg.exe
+# process:blender.exe
+# process:ComfyUI.exe

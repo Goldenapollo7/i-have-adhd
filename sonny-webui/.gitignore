@@ -1,0 +1,15 @@
+# Generated local secrets and machine-specific configs — never commit.
+ai-pc/.env
+ai-pc/ai-pc.toml
+gaming-pc/gaming-pc.toml
+gaming-pc/firewall_rule.txt
+*.env
+*.lock
+*.bak
+
+# Python bytecode & local test artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/

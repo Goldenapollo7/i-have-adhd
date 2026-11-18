@@ -1,0 +1,15 @@
+# Open Terminal config — GAMING PC ONLY (installed to C:\SonnyAgent\gaming-pc.toml)
+# Generated locally by: python scripts\init_config.py --ai-tailscale-ip <IP> --gaming-tailscale-ip <IP>
+# Role: Coding (C:\SonnyWork\code) and Media Generation (C:\SonnyWork\media) ONLY.
+# Open WebUI and primary Ollama NEVER run on the Gaming PC.
+# Binds strictly to the Gaming PC's private Tailscale IP (100.64.0.0/10) — NEVER 0.0.0.0.
+# Stopped immediately whenever GAME_MODE_ON.cmd runs.
+
+host = "100.64.0.2"
+port = 8002
+api_key = "REPLACE_WITH_INIT_CONFIG_GENERATED_SECRET"
+cors_allowed_origins = "http://127.0.0.1:3000"
+file_browser_root = "C:\\"
+enable_browser = true
+enable_desktop = true
+log_dir = "C:\\SonnyAgent\\logs\\gaming-pc"

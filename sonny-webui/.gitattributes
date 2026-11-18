@@ -1,0 +1,11 @@
+# Windows batch scripts require CRLF so cmd.exe label parsing never misbehaves.
+*.cmd text eol=crlf
+
+# Keep Python, config, and docs on clean LF.
+*.py text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.toml text eol=lf
+*.example text eol=lf
+*.md text eol=lf
+*.txt text eol=lf

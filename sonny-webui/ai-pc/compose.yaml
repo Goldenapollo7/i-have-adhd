@@ -1,0 +1,47 @@
+# Sonny — Open WebUI stack (runs on AI PC ONLY; never deploy on Gaming PC)
+# Binds strictly to 127.0.0.1:3000. Expose privately via `tailscale serve` only.
+name: sonny
+
+services:
+  sonny-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: sonny-webui
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - sonny-webui-data:/app/backend/data
+    env_file:
+      - .env
+    environment:
+      # Connect to the AI PC's existing Ollama install (no bundled Ollama, no model pulls).
+      OLLAMA_BASE_URL: "http://host.docker.internal:11434"
+      WEBUI_NAME: "Sonny"
+      WEBUI_AUTH: "true"
+      # Allows ONLY the very first owner/admin account signup, then locks registration.
+      ENABLE_SIGNUP: "false"
+      # Trusted session lasts 4 weeks so desktop/iPhone don't repeatedly re-login.
+      # Revoke anytime by signing out, changing password, or rotating WEBUI_SECRET_KEY.
+      JWT_EXPIRES_IN: "4w"
+      # Keep tool and Open Terminal integrations enabled for AI PC + Gaming PC control.
+      ENABLE_TOOL_SERVERS: "true"
+      # Prevent unexpected background model downloads from Hugging Face.
+      HF_HUB_OFFLINE: "1"
+      # Harden auth cookies for same-site sessions.
+      WEBUI_AUTH_COOKIE_SAME_SITE: "lax"
+    healthcheck:
+      test:
+        - CMD
+        - python3
+        - -c
+        - "import sys, urllib.request; r = urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=4); sys.exit(0 if r.status == 200 else 1)"
+      interval: 15s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
+
+volumes:
+  sonny-webui-data:
+    name: sonny-webui-data

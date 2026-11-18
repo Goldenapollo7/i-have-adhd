@@ -1,0 +1,13 @@
+# Open Terminal config — AI PC ONLY (installed to C:\SonnyAgent\ai-pc.toml)
+# Generated locally by: python scripts\init_config.py --ai-tailscale-ip <IP> --gaming-tailscale-ip <IP>
+# Binds to 127.0.0.1 so port 8001 is never exposed to LAN or the internet.
+# Open WebUI reaches it locally via http://host.docker.internal:8001.
+
+host = "127.0.0.1"
+port = 8001
+api_key = "REPLACE_WITH_INIT_CONFIG_GENERATED_SECRET"
+cors_allowed_origins = "http://127.0.0.1:3000,http://localhost:3000"
+file_browser_root = "C:\\"
+enable_browser = true
+enable_desktop = true
+log_dir = "C:\\SonnyAgent\\logs\\ai-pc"
