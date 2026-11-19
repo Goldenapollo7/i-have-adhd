@@ -365,12 +365,36 @@ class TestScriptsAndConfig(unittest.TestCase):
             root = self._copy_kit(tmp)
             # Inject prohibited artifacts and confirm validator catches every one of them
             (root / "ai-pc" / "bad.ps1").write_text("Write-Host hi\n", encoding="utf-8")
-            (root / "ai-pc" / ".env").write_text("WEBUI_SECRET_KEY=leaked\n", encoding="utf-8")
             (root / "gaming-pc" / "compose.yaml").write_text("services: {}\n", encoding="utf-8")
             errs = "\n".join(self.val_mod.validate_kit(root))
             self.assertIn("bad.ps1", errs)
-            self.assertIn("ai-pc/.env", errs)
             self.assertIn("gaming-pc/compose.yaml", errs)
+
+    def test_generated_secrets_are_allowed_but_must_stay_gitignored(self) -> None:
+        """After Step 1 the owner HAS real secrets on disk; that must not fail validation.
+
+        The real risk is a secret that is present but no longer git-ignored, which would
+        leak on commit. That is the case the validator must catch.
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            root = self._copy_kit(tmp)
+
+            # Generating real configs is a normal, supported post-setup state.
+            self.init_mod.generate_configs(
+                root, ai_tailscale_ip="100.90.10.1", gaming_tailscale_ip="100.90.10.2"
+            )
+            self.assertTrue((root / "ai-pc" / ".env").is_file())
+            self.assertEqual(self.val_mod.validate_kit(root), [])
+
+            # Now simulate a .gitignore regression: the secret exists but is no longer ignored.
+            gi = root / ".gitignore"
+            gi.write_text(
+                gi.read_text(encoding="utf-8").replace("ai-pc/.env\n", "").replace("*.env\n", ""),
+                encoding="utf-8",
+            )
+            errs = "\n".join(self.val_mod.validate_kit(root))
+            self.assertIn("ai-pc/.env", errs)
+            self.assertIn("NOT git-ignored", errs)
 
 
 if __name__ == "__main__":

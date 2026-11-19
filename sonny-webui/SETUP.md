@@ -46,7 +46,7 @@ Expected: `[PASS] Sonny kit validated cleanly (31 files checked, 0 issues).`
 The kit's own test suite is also runnable and needs no Docker, Ollama, or network (all servers are mocked in-process):
 
 ```cmd
-cd /d C:\SonnyWebUI
+cd /d C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui
 ```
 
 ```cmd
@@ -59,14 +59,14 @@ Expected: `Ran 25 tests` then `OK`.
 
 ## Step 1 — Generate Private Local Keys (AI PC, ~1 min)
 
-1. Copy the `sonny-webui` folder to `C:\SonnyWebUI` on the **AI PC**.
+1. Your kit is already at `C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui` on the **AI PC**. Every command below uses that path.
 2. On the **Gaming PC**, open `cmd.exe` and get its `100.x.y.z` Tailscale IP:
    ```cmd
    tailscale ip -4
    ```
 3. On the **AI PC**, open `cmd.exe` and generate your private `.env` and TOML keys (replace `<GAMING_TS_IP>` with the IP from step 2):
    ```cmd
-   cd /d C:\SonnyWebUI
+   cd /d C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui
    ```
    ```cmd
    python scripts\init_config.py --gaming-tailscale-ip <GAMING_TS_IP>
@@ -79,12 +79,12 @@ Expected: `Ran 25 tests` then `OK`.
 
 1. Start AI-PC Open Terminal (`127.0.0.1:8001`) and Open WebUI (`127.0.0.1:3000`):
    ```cmd
-   C:\SonnyWebUI\ai-pc\INSTALL_AI_PC.cmd
+   C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui\ai-pc\INSTALL_AI_PC.cmd
    ```
 2. Open `http://127.0.0.1:3000` in your browser and create your single owner/admin account. *(New signups stay automatically locked for everyone else after your account is created.)*
 3. Auto-register the **Sonny** model preset, automatic Ollama router, guarded dual-PC tool, and both PC terminal connections (prompts for your Open WebUI email/password locally; never prints keys):
    ```cmd
-   python C:\SonnyWebUI\scripts\configure_webui.py
+   python C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui\scripts\configure_webui.py
    ```
    *(If you run a media container like ComfyUI on the Gaming PC that you want Sonny able to stop automatically, add `--media-containers comfyui` — you can re-run this command anytime.)*
 
@@ -92,7 +92,7 @@ Expected: `Ran 25 tests` then `OK`.
 
 ## Step 3 — Install Coding/Media Worker & Kill-Switch on the Gaming PC (~3 min)
 
-1. Copy **only** `C:\SonnyWebUI\gaming-pc` (including the generated `gaming-pc.toml` and `firewall_rule.txt`) to the **Gaming PC** (for example `C:\SonnySetup\gaming-pc`).
+1. Copy **only** `C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui\gaming-pc` (including the generated `gaming-pc.toml` and `firewall_rule.txt`) to the **Gaming PC** (for example `C:\SonnySetup\gaming-pc`).
 2. On the **Gaming PC**, open **Command Prompt as Administrator** (so it also applies the Windows Firewall rule locking TCP `8002` to the AI PC's Tailscale IP only) and run:
    ```cmd
    C:\SonnySetup\gaming-pc\INSTALL_GAMING_PC.cmd
@@ -146,7 +146,7 @@ When a machine is reachable, Sonny has genuine full control of it — not a narr
 
 1. On the **AI PC**, publish Open WebUI strictly inside your Tailscale tailnet (`tailscale serve` only — never public):
    ```cmd
-   C:\SonnyWebUI\ai-pc\ENABLE_TAILSCALE_HTTPS.cmd
+   C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui\ai-pc\ENABLE_TAILSCALE_HTTPS.cmd
    ```
 2. Copy the printed `https://<ai-pc-name>.<your-tailnet>.ts.net` link.
 3. On your **iPhone** (with Tailscale connected), open that URL in Safari → sign in once (session lasts 4 weeks) → tap **Share → Add to Home Screen** → **Add**.
@@ -158,7 +158,7 @@ When a machine is reachable, Sonny has genuine full control of it — not a narr
 
 1. On the **AI PC**, run the read-only live smoke check:
    ```cmd
-   python C:\SonnyWebUI\scripts\smoke_test_live.py --require-gaming-online
+   python C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui\scripts\smoke_test_live.py --require-gaming-online
    ```
 2. In Sonny (`http://127.0.0.1:3000`), send:
    - `"Check homelab status"` → verifies read-only CPU/RAM/RTX 5090 VRAM on both PCs with no confirmation prompt.
@@ -166,7 +166,7 @@ When a machine is reachable, Sonny has genuine full control of it — not a narr
    - `"Start a coding job on the Gaming PC running: echo hello from gaming pc"` → verifies the Confirm/Deny prompt and `C:\SonnyWork\code` tracking.
 3. Tap **`STOP SONNY - GAME MODE`** on the Gaming PC, then run:
    ```cmd
-   python C:\SonnyWebUI\scripts\smoke_test_live.py
+   python C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui\scripts\smoke_test_live.py
    ```
    Confirm Gaming PC reports port `8002` closed (`GAMING MODE ON`) while AI PC chat and Ollama keep working normally. Tap **`ALLOW SONNY`** when ready to resume coding/media work.
 
@@ -174,7 +174,7 @@ When a machine is reachable, Sonny has genuine full control of it — not a narr
 
 ## Day-to-Day Operations & Troubleshooting
 
-- **Revoke all browser/iPhone sessions instantly:** Run `python C:\SonnyWebUI\scripts\init_config.py --gaming-tailscale-ip <GAMING_TS_IP> --rotate`, then `docker compose -f C:\SonnyWebUI\ai-pc\compose.yaml up -d` and `python C:\SonnyWebUI\scripts\configure_webui.py`.
+- **Revoke all browser/iPhone sessions instantly:** Run `python C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui\scripts\init_config.py --gaming-tailscale-ip <GAMING_TS_IP> --rotate`, then `docker compose -f C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui\ai-pc\compose.yaml up -d` and `python C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui\scripts\configure_webui.py`.
 - **Full interactive file browser & live terminal tabs:** Click the **Terminal** icon in Open WebUI's message bar and select **`AI-PC`** or **`Gaming-PC (Code & Media)`**; files, terminals, notes, and chats open as tabs side by side.
 - **If `INSTALL_AI_PC.cmd` warns that container couldn't reach `host.docker.internal:11434`:** Confirm Docker Desktop is updated and Ollama is running (`http://127.0.0.1:11434/api/version`), and allow Docker Desktop's local bridge in Windows Firewall if blocked.
 - **If Windows Open Terminal mentions `VCRUNTIME140.dll`:** Install Microsoft's official x64 Visual C++ Redistributable and rerun the start shortcut.

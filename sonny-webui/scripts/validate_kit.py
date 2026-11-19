@@ -181,10 +181,16 @@ def validate_kit(root: Path) -> list[str]:
         if block_depth != 0:
             errors.append(f"{rel}: unbalanced parenthesized block depth ({block_depth})")
 
-    # 7b. Verify non-.cmd text files use LF endings and zero generated secret files exist in clean kit
-    for secret_rel in ("ai-pc/.env", "ai-pc/ai-pc.toml", "gaming-pc/gaming-pc.toml", "gaming-pc/firewall_rule.txt"):
-        if (root / secret_rel).exists():
-            errors.append(f"Generated private file present in clean kit tree: {secret_rel}")
+    # 7b. Verify non-.cmd text files use LF endings.
+    # Generated secrets are EXPECTED once the owner runs init_config.py (Step 1), so their
+    # presence is informational, never an error. We only assert they are git-ignored.
+    secret_rels = ("ai-pc/.env", "ai-pc/ai-pc.toml", "gaming-pc/gaming-pc.toml", "gaming-pc/firewall_rule.txt")
+    present = [rel for rel in secret_rels if (root / rel).exists()]
+    if present:
+        gi_text = (root / ".gitignore").read_text(encoding="utf-8") if (root / ".gitignore").is_file() else ""
+        for rel in present:
+            if rel not in gi_text and rel.split("/")[-1] not in gi_text:
+                errors.append(f"Generated private file is NOT git-ignored (would leak if committed): {rel}")
     for txt_file in sorted(root.rglob("*")):
         if not txt_file.is_file() or "__pycache__" in txt_file.parts or txt_file.suffix == ".cmd":
             continue

@@ -1,47 +1,41 @@
 SONNY - START HERE
 ==================
 
-You downloaded: sonny-webui-kit.zip
 This is the complete Sonny (Open WebUI + Open Terminal) dual-PC kit.
-31 files. Nothing to install on the PC that gave you this zip.
+32 files. Nothing to install on the PC that gave you this zip.
 
 --------------------------------------------------------------------------------
-STEP 0 - EXTRACT THIS WAY (IMPORTANT)
+STEP 0 - VERIFY THE KIT (IMPORTANT)
 --------------------------------------------------------------------------------
 
-Extract the zip to your AI PC so that the folder is exactly:
+Your kit is already extracted on the AI PC at:
 
-    C:\SonnyWebUI
+    C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui
 
-In File Explorer: right-click the zip -> "Extract All..." -> set the destination
-to C:\  -> Extract. You should end up with:
+Every command in this kit uses that exact path. Open cmd.exe and go there:
 
-    C:\SonnyWebUI\SETUP.md
-    C:\SonnyWebUI\ai-pc\
-    C:\SonnyWebUI\gaming-pc\
-    C:\SonnyWebUI\scripts\
+    cd /d C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui
 
 Do NOT use a tool that rewrites line endings. The 9 files ending in .cmd are
-Windows batch scripts and MUST keep Windows (CRLF) line endings. Windows'
-built-in "Extract All" preserves them correctly.
+Windows batch scripts and MUST keep Windows (CRLF) line endings.
 
 VERIFY IT WORKED (10 seconds). Open cmd.exe and run:
 
-    cd /d C:\SonnyWebUI
+    cd /d C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui
 
     python scripts\validate_kit.py
 
 You must see:
 
-    [PASS] Sonny kit validated cleanly (31 files checked, 0 issues).
+    [PASS] Sonny kit validated cleanly (32 files checked, 0 issues).
 
-If you see "bare LF line endings" or "has no CRLF at all" instead, the zip was
-extracted with a tool that changed the line endings. Re-extract with Windows'
-own "Extract All", or clone the repo instead:
+If you see "bare LF line endings" or "has no CRLF at all" instead, a copy tool
+changed the line endings. Re-download and extract with Windows' own
+"Extract All", or clone the repo instead:
 
     git clone -b arena/2a156ec8-i-have-adhd https://github.com/Goldenapollo7/i-have-adhd.git
 
-Then move i-have-adhd\sonny-webui to C:\SonnyWebUI.
+Then move i-have-adhd\sonny-webui to C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui.
 
 --------------------------------------------------------------------------------
 THEN FOLLOW THE GUIDE
@@ -49,7 +43,7 @@ THEN FOLLOW THE GUIDE
 
 Open this file in Notepad or your browser:
 
-    C:\SonnyWebUI\SETUP.md
+    C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui\SETUP.md
 
 It walks you through, one command at a time:
 
