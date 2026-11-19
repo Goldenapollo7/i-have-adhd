@@ -27,6 +27,7 @@ REQUIRED_FILES: tuple[str, ...] = (
     ".gitattributes",
     ".gitignore",
     "SETUP.md",
+    "INSTALL_TO_SONNYWEBUI.cmd",
     "ai-pc/compose.yaml",
     "ai-pc/.env.example",
     "ai-pc/ai-pc.toml.example",

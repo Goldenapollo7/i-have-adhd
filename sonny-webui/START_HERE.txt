@@ -2,40 +2,49 @@ SONNY - START HERE
 ==================
 
 This is the complete Sonny (Open WebUI + Open Terminal) dual-PC kit.
-32 files. Nothing to install on the PC that gave you this zip.
+33 files. Nothing to install on the PC that gave you this zip.
 
 --------------------------------------------------------------------------------
-STEP 0 - VERIFY THE KIT (IMPORTANT)
+STEP 1 - INSTALL IT (one command)
 --------------------------------------------------------------------------------
 
-Your kit is already extracted on the AI PC at:
+You extracted this zip into your Downloads folder. That is fine. Now move it
+somewhere permanent with ONE command.
 
-    C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui
+Open cmd.exe, go to the folder you extracted (the one containing SETUP.md),
+and run:
 
-Every command in this kit uses that exact path. Open cmd.exe and go there:
+    INSTALL_TO_SONNYWEBUI.cmd
 
-    cd /d C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui
+Example, if you extracted to Downloads:
 
-Do NOT use a tool that rewrites line endings. The 9 files ending in .cmd are
-Windows batch scripts and MUST keep Windows (CRLF) line endings.
+    cd /d %USERPROFILE%\Downloads\i-have-adhd-sonny-kit-v2\sonny-webui
 
-VERIFY IT WORKED (10 seconds). Open cmd.exe and run:
+    INSTALL_TO_SONNYWEBUI.cmd
 
-    cd /d C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui
+The installer will:
+  - copy the kit to C:\SonnyWebUI\sonny-webui
+  - back up any existing install first
+  - KEEP your generated keys if you already made them
+  - run the validator and tell you plainly whether it worked
 
-    python scripts\validate_kit.py
+If it says [DONE] INSTALLED AND VERIFIED, you are ready for Step 2.
 
-You must see:
+NOTE: if PowerShell opens instead of cmd.exe, type "cmd" first. In PowerShell
+the command "cd /d" does not work - "/d" is a cmd.exe-only flag.
 
-    [PASS] Sonny kit validated cleanly (32 files checked, 0 issues).
+--------------------------------------------------------------------------------
+STEP 2 - GENERATE YOUR KEYS
+--------------------------------------------------------------------------------
 
-If you see "bare LF line endings" or "has no CRLF at all" instead, a copy tool
-changed the line endings. Re-download and extract with Windows' own
-"Extract All", or clone the repo instead:
+    cd /d C:\SonnyWebUI\sonny-webui
 
-    git clone -b arena/2a156ec8-i-have-adhd https://github.com/Goldenapollo7/i-have-adhd.git
+    python scripts\init_config.py --gaming-tailscale-ip <GAMING_TS_IP>
 
-Then move i-have-adhd\sonny-webui to C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui.
+Get <GAMING_TS_IP> first by running "tailscale ip -4" ON THE GAMING PC.
+If tailscale is not on PATH on the AI PC, also add --ai-tailscale-ip <AI_TS_IP>.
+
+Then follow C:\SonnyWebUI\sonny-webui\SETUP.md from "Step 2".
 
 --------------------------------------------------------------------------------
 THEN FOLLOW THE GUIDE
@@ -43,7 +52,7 @@ THEN FOLLOW THE GUIDE
 
 Open this file in Notepad or your browser:
 
-    C:\SonnyWebUI\i-have-adhd-sonny-kit-v1\sonny-webui\SETUP.md
+    C:\SonnyWebUI\sonny-webui\SETUP.md
 
 It walks you through, one command at a time:
 
