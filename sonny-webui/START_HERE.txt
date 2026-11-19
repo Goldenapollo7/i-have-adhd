@@ -1,0 +1,123 @@
+SONNY - START HERE
+==================
+
+You downloaded: sonny-webui-kit.zip
+This is the complete Sonny (Open WebUI + Open Terminal) dual-PC kit.
+31 files. Nothing to install on the PC that gave you this zip.
+
+--------------------------------------------------------------------------------
+STEP 0 - EXTRACT THIS WAY (IMPORTANT)
+--------------------------------------------------------------------------------
+
+Extract the zip to your AI PC so that the folder is exactly:
+
+    C:\SonnyWebUI
+
+In File Explorer: right-click the zip -> "Extract All..." -> set the destination
+to C:\  -> Extract. You should end up with:
+
+    C:\SonnyWebUI\SETUP.md
+    C:\SonnyWebUI\ai-pc\
+    C:\SonnyWebUI\gaming-pc\
+    C:\SonnyWebUI\scripts\
+
+Do NOT use a tool that rewrites line endings. The 9 files ending in .cmd are
+Windows batch scripts and MUST keep Windows (CRLF) line endings. Windows'
+built-in "Extract All" preserves them correctly.
+
+VERIFY IT WORKED (10 seconds). Open cmd.exe and run:
+
+    cd /d C:\SonnyWebUI
+
+    python scripts\validate_kit.py
+
+You must see:
+
+    [PASS] Sonny kit validated cleanly (31 files checked, 0 issues).
+
+If you see "bare LF line endings" or "has no CRLF at all" instead, the zip was
+extracted with a tool that changed the line endings. Re-extract with Windows'
+own "Extract All", or clone the repo instead:
+
+    git clone -b arena/2a156ec8-i-have-adhd https://github.com/Goldenapollo7/i-have-adhd.git
+
+Then move i-have-adhd\sonny-webui to C:\SonnyWebUI.
+
+--------------------------------------------------------------------------------
+THEN FOLLOW THE GUIDE
+--------------------------------------------------------------------------------
+
+Open this file in Notepad or your browser:
+
+    C:\SonnyWebUI\SETUP.md
+
+It walks you through, one command at a time:
+
+    Prerequisites        check Python 3.11+, Docker, Ollama, Tailscale
+    Step 0               verify the kit (above)
+    Step 1               generate your private keys
+    Step 2               install + auto-configure Sonny on the AI PC
+    Step 3               install the coding/media worker + kill-switch on the Gaming PC
+    Step 4               how to stop / free the Gaming PC to game (Ctrl+Alt+G)
+    Step 5               private iPhone + touchscreen access
+    Step 6               verify everything end-to-end
+
+--------------------------------------------------------------------------------
+WHAT IS IN THIS FOLDER
+--------------------------------------------------------------------------------
+
+    SETUP.md                     The setup guide - read this first.
+    START_HERE.txt               This file.
+
+    ai-pc\                       Runs on the AI PC (JOSHAIPC).
+      INSTALL_AI_PC.cmd            Installs Open Terminal + starts Open WebUI.
+      ENABLE_TAILSCALE_HTTPS.cmd   Private HTTPS for iPhone (tailscale serve).
+      START/STOP_AI_PC_TERMINAL.cmd
+      compose.yaml                 Open WebUI container (localhost only).
+      .env.example / ai-pc.toml.example
+
+    gaming-pc\                   Runs on the Gaming PC.
+      INSTALL_GAMING_PC.cmd        Installs the guarded worker + kill-switch.
+      GAME_MODE_ON.cmd             Instant stop + lock (Ctrl+Alt+G).
+      GAME_MODE_OFF.cmd            "ALLOW SONNY" - re-enable.
+      GAME_MODE_STATUS.cmd         Check lock state + RTX 5090 usage.
+      START_AGENT_GUARDED.cmd      Starts the worker unless Gaming Mode locks it.
+      media_stop_helper.py / media_stop_list.txt
+      gaming-pc.toml.example
+
+    openwebui\                   Uploaded automatically by configure_webui.py.
+      sonny_system_prompt.md
+      sonny_auto_router.py         Automatic Ollama model routing.
+      sonny_pc_ops.py              Guarded dual-PC control tools.
+
+    scripts\                     Run these on the AI PC.
+      init_config.py               Generates keys (.env + 2 TOML) - run once.
+      configure_webui.py           Auto-creates the Sonny model, router, tools.
+      smoke_test_live.py           Read-only live health check.
+      validate_kit.py              Verifies the kit is intact.
+
+    tests\                       27 automated tests, no network needed.
+                                   Run: python -m unittest discover -s tests
+
+--------------------------------------------------------------------------------
+YOU WILL NEED (before starting)
+--------------------------------------------------------------------------------
+
+    Python 3.11+      on BOTH PCs       check: python --version
+    Docker Desktop    AI PC only        check: docker version
+    Ollama + models   AI PC only        check: ollama list
+                      needs sonny7-uncensored-8b:latest
+                      and   sonny7-vision-4b-64k:latest
+    Tailscale         on BOTH PCs       check: tailscale ip -4
+
+Type "python", not "python3". On Windows, "python3" opens the Microsoft Store
+stub instead of Python. If "python" fails but "py -3" works, use "py -3".
+
+--------------------------------------------------------------------------------
+NOTE ON SECRETS
+--------------------------------------------------------------------------------
+
+This kit contains NO passwords or keys. Your private keys are generated locally
+by scripts\init_config.py in Step 1 and never leave your machines. Do not put
+the generated ai-pc\.env, ai-pc\ai-pc.toml, or gaming-pc\gaming-pc.toml into
+email, chat, or cloud storage.

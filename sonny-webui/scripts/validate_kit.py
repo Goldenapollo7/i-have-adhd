@@ -49,6 +49,7 @@ REQUIRED_FILES: tuple[str, ...] = (
     "scripts/configure_webui.py",
     "scripts/smoke_test_live.py",
     "scripts/validate_kit.py",
+    "START_HERE.txt",
     "tests/__init__.py",
     "tests/__main__.py",
     "tests/test_auto_router.py",
